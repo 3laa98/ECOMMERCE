@@ -13,6 +13,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Debug Secrets
+        run: |
+         echo "EC2_HOST: ${{ secrets.EC2_HOST }}"
+         echo "EC2_SSH_KEY Length: ${#secrets.EC2_SSH_KEY}"
+
+
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
