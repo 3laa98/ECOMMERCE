@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <style>
+    .form-layout {
+      border-radius: 20px;
+      width: 500px;
+    }
+  </style>
+  {% if messages %}
+    {% for message in messages %}
+      <div class="container position-fixed upper-0">
+        {% for message in messages %}
+          <div class="alert alert-dismissible alert-{{ message.tags }} fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <br /> <br />
+  <div class="container bg-white shadow-md p-5 form-layout">
+    <h3>Login to your account</h3>
+
+    <hr />
+
+    <br />
+
+    <form method="POST" autocomplete="off">
+      {% csrf_token %}
+
+      {{ form|crispy }}
+
+      <br />
+      <div class="text-center">
+        <button type="submit" class="primary-btn text-white w-100 p-2"><i class="fa fa-key" aria-hidden="true"></i> &nbsp; Login</button>
+      </div>
+      <br /> <br />
+
+      {{ form.non_field_errors }}
+    </form>
+  </div>
+
+  <script>
+    // Auto-dismiss alerts after 2 seconds
+    setTimeout(() => {
+      let alerts = document.querySelectorAll('.alert')
+      alerts.forEach((alert) => {
+        let bsAlert = new bootstrap.Alert(alert)
+        bsAlert.close()
+      })
+    }, 5000)
+  </script>
+{% endblock %}

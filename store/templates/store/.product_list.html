@@ -1,0 +1,125 @@
+{% include 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+  <!-- All products section -->
+  <div class="album py-5 bg-light">
+    <div class="container">
+      <!-- product_list.html -->
+      <form method="GET" id="filter-form">
+        {{ filter.form.as_p }} <!-- Automatically renders the filter form fields -->
+
+        <button type="submit" class="btn btn-primary">Apply Filter</button>
+        <a href="{% url 'product-list' %}" class="btn btn-secondary">Reset Filters</a>
+      </form>
+      <div class="pb-3 h5">All products</div>
+
+      <hr />
+
+      <br />
+      <!-- Pagination -->
+      <div class="pagination mt-4 text-center justify-content-center">
+        {% if page_obj.has_previous %}
+          <a class="btn btn-outline-primary" href="?page=1&{{ request.GET.urlencode }}">First</a>
+          <a class="btn btn-outline-primary" href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}">Previous</a>
+        {% endif %}
+
+        <span class="mx-3">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+          <a class="btn btn-outline-primary" href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}">Next</a>
+          <a class="btn btn-outline-primary" href="?page={{ page_obj.paginator.num_pages }}&{{ request.GET.urlencode }}">Last</a>
+        {% endif %}
+      </div>
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
+        {% for product in page_obj %}
+          <div class="col">
+            <div class="card shadow-sm">
+              <img class="img-fluid" alt="Responsive image" src="{{ product.image.url }}" style="width: 300px; height: 300px; object-fit: cover; border-radius: 10px;" />
+
+              <div class="card-body">
+                <p class="card-text">
+                  <a class="text-info text-decoration-none" href="{{ product.get_absolute_url }}">{{ product.name|capfirst }}</a>
+                </p>
+
+                <div class="d-flex justify-content-between align-items-center">
+                  <h5>$ {{ product.price }}</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination mt-4 text-center justify-content-center">
+        {% if page_obj.has_previous %}
+          <a class="btn btn-outline-primary" href="?page=1&{{ request.GET.urlencode }}">First</a>
+          <a class="btn btn-outline-primary" href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}">Previous</a>
+        {% endif %}
+
+        <span class="mx-3">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+          <a class="btn btn-outline-primary" href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}">Next</a>
+          <a class="btn btn-outline-primary" href="?page={{ page_obj.paginator.num_pages }}&{{ request.GET.urlencode }}">Last</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript to manipulate URL parameters -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const paginationLinks = document.querySelectorAll('.pagination a')
+    
+      paginationLinks.forEach((link) => {
+        link.addEventListener('click', function (event) {
+          event.preventDefault() // Prevent default behavior
+    
+          // Get current URL and create a URL object
+          let currentUrl = new URL(window.location.href)
+    
+          // Get all search parameters from the URL
+          let searchParams = new URLSearchParams(currentUrl.search)
+    
+          // Remove the 'page' parameter from the search params
+          searchParams.delete('page')
+    
+          // Add the new page parameter
+          const newPage = new URL(link.href).searchParams.get('page')
+          searchParams.set('page', newPage)
+    
+          // Update the URL with the new parameters
+          currentUrl.search = searchParams.toString()
+    
+          // Navigate to the new URL (this updates the page without reloading)
+          window.location.href = currentUrl.toString()
+        })
+      })
+    })
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('filter-form')
+      form.addEventListener('submit', function (event) {
+        event.preventDefault()
+        const url = new URL(window.location.href)
+        const formData = new FormData(form)
+    
+        formData.forEach((value, key) => {
+          if (!value.trim()) {
+            url.searchParams.delete(key)
+          } else {
+            url.searchParams.set(key, value)
+          }
+        })
+    
+        window.location.href = url.toString()
+      })
+    })
+  </script>
+{% endblock %}
