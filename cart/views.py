@@ -1,8 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-
+from django.views.decorators.http import require_POST
 from store.models import Product
+from django.views.decorators.csrf import csrf_protect
+from django.template.loader import render_to_string
 
 from .models import Cart, CartItem
 
@@ -14,24 +16,57 @@ def get_cart(request):
     return cart
 
 
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect
+
+from django.views.decorators.http import require_POST
+from .models import Product, Cart, CartItem
+from django.contrib.auth.decorators import login_required
+
+
 @login_required
-def cart_add(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    cart = get_cart(request)
-    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+@require_POST
+def cart_add(request):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        product_id = request.POST.get('product_id')
 
-    if not created:
-        cart_item.quantity += 1
-        cart_item.save()
+        if not product_id:
+            return JsonResponse({'success': False, 'error': 'Product ID is required'}, status=400)
 
-    return redirect('cart_detail')
+        product = get_object_or_404(Product, id=product_id)
+        cart = get_cart(request)  # Assuming you have this method to retrieve the user's cart
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+
+        if not created:
+            cart_item.quantity += 1
+            cart_item.save()
+
+        cart_items = cart.items.all()
+
+        # Calculate total quantity and price
+        cart_total_quantity = sum(item.quantity for item in cart_items)
+        cart_total_price = sum(item.product.price * item.quantity for item in cart_items)
+
+        # Render updated cart items HTML
+        cart_items_html = render_to_string('cart/partial/cart_list.html', {'cart_items': cart_items})
+
+        return JsonResponse({
+            'success': True,
+            'cart_item_quantity': cart_item.quantity,
+            'cart_total_quantity': cart_total_quantity,
+            'cart_total_price': cart_total_price,
+            'cart_items_html': cart_items_html,  # Return the HTML of cart items
+        })
+
+    return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
+
 
 
 @login_required
 def cart_remove(request, product_id):
     cart = get_cart(request)
     CartItem.objects.filter(cart=cart, product_id=product_id).delete()
-    return redirect('cart_detail')
+    return redirect('cart-detail')
 
 
 @login_required

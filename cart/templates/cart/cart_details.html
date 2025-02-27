@@ -56,78 +56,26 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              <img src="https://via.placeholder.com/50" class="thumbnail-img" />
-            </td>
-            <td>K2 Snowboard 2018</td>
-            <td class="price">$295.00</td>
-            <td>
-              <div class="quantity-controls">
-                <button onclick="changeQuantity(this, -1)">-</button>
-                <input type="text" class="form-control quantity" value="1" readonly />
-                <button onclick="changeQuantity(this, 1)">+</button>
-              </div>
-            </td>
-            <td class="total-price">$295.00</td>
-            <td>
-              <span class="delete-btn" onclick="deleteRow(this)">🗑</span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <img src="https://via.placeholder.com/50" class="thumbnail-img" />
-            </td>
-            <td>Aquet Drone D 420</td>
-            <td class="price">$275.00</td>
-            <td>
-              <div class="quantity-controls">
-                <button onclick="changeQuantity(this, -1)">-</button>
-                <input type="text" class="form-control quantity" value="2" readonly />
-                <button onclick="changeQuantity(this, 1)">+</button>
-              </div>
-            </td>
-            <td class="total-price">$550.00</td>
-            <td>
-              <span class="delete-btn" onclick="deleteRow(this)">🗑</span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <img src="https://via.placeholder.com/50" class="thumbnail-img" />
-            </td>
-            <td>Berzerker Snowboard</td>
-            <td class="price">$295.00</td>
-            <td>
-              <div class="quantity-controls">
-                <button onclick="changeQuantity(this, -1)">-</button>
-                <input type="text" class="form-control quantity" value="1" readonly />
-                <button onclick="changeQuantity(this, 1)">+</button>
-              </div>
-            </td>
-            <td class="total-price">$295.00</td>
-            <td>
-              <span class="delete-btn" onclick="deleteRow(this)">🗑</span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <img src="https://via.placeholder.com/50" class="thumbnail-img" />
-            </td>
-            <td>Element Snowboard</td>
-            <td class="price">$110.00</td>
-            <td>
-              <div class="quantity-controls">
-                <button onclick="changeQuantity(this, -1)">-</button>
-                <input type="text" class="form-control quantity" value="3" readonly />
-                <button onclick="changeQuantity(this, 1)">+</button>
-              </div>
-            </td>
-            <td class="total-price">$330.00</td>
-            <td>
-              <span class="delete-btn" onclick="deleteRow(this)">🗑</span>
-            </td>
-          </tr>
+          {% for item in cart_items %}
+            <tr>
+              <td>
+                <img src="{{ item.product.image.url }} " class="thumbnail-img" />
+              </td>
+              <td>{{ item.product.name }}</td>
+              <td class="price">${{ item.product.price }}</td>
+              <td>
+                <div class="quantity-controls">
+                  <button onclick="changeQuantity(this, -1)">-</button>
+                  <input type="text" class="form-control quantity" value="{{ item.quantity }} " readonly />
+                  <button onclick="changeQuantity(this, 1)">+</button>
+                </div>
+              </td>
+              <td class="total-price">$295.00</td>
+              <td>
+                <span class="delete-btn" onclick="deleteRow(this)">🗑</span>
+              </td>
+            </tr>
+          {% endfor %}
         </tbody>
       </table>
     </div>

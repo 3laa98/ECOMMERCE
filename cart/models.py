@@ -20,7 +20,17 @@ class Cart(models.Model):
 
     def __str__(self):
         """Unicode representation of Cart."""
-        pass
+        return f"Cart ({self.user.username})"
+
+    def get_cart_total(self):
+        """Method to calculate total price of items in the cart."""
+        total = sum(item.product.price * item.quantity for item in self.items.all())
+        return total
+
+    def get_cart_count(self):
+        """Method to count total number of items in the cart."""
+        count = sum(item.quantity for item in self.items.all())
+        return count
 
 
 class CartItem(models.Model):
@@ -38,4 +48,4 @@ class CartItem(models.Model):
 
     def __str__(self):
         """Unicode representation of CartItem."""
-        pass
+        return f"{self.product.name} (x{self.quantity}) in Cart {self.cart.id}"

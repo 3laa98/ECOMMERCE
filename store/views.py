@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods, require_POST
 
 from store.filters import ProductFilter
 from store.forms import ProductForm
-from store.models import Product
+from store.models import Product, Category
 
 # Create your views here.
 
@@ -78,3 +78,6 @@ def del_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     product.delete()
     return redirect('store')
+
+
+

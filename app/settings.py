@@ -87,10 +87,21 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'store.context_processors.get_categories',
+                'cart.context_processors.get_cartitems',
             ],
         },
     },
 ]
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',  # Arbitrary unique name
+    }
+}
 
 WSGI_APPLICATION = 'app.wsgi.application'
 
