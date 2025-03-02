@@ -7,7 +7,7 @@
       <h3 class="product-name"><a href="#">{{ item.product.name }}</a></h3>
       <h4 class="product-price"><span class="qty">{{ item.quantity }}x</span>${{ item.product.price }}</h4>
     </div>
-    <button class="delete" data-cart-item-id="{{ item.id }}"><i class="fa fa-close"></i></button>
+    <button class="delete" data-cart-item-id="{{ item.id }}" data-csrf-token="{{ csrf_token }}" data-cart-delete-url="{% url 'cart-remove' %}"><i class="fa fa-close"></i></button>
   </div>
 {% empty %}
   <p>Your cart is empty.</p>

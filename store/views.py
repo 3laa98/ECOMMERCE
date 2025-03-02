@@ -15,12 +15,8 @@ from store.models import Product, Category
 
 # @login_required
 def store(request):
-    products = Product.objects.all()
-    # paginator = Paginator(products, 1)  # Show 25 contacts per page.
-
-    # page_number = request.GET.get("page")
-    # page_obj = paginator.get_page(page_number)
-    context = {'my_products': products}
+    new_products = Product.objects.all().order_by('-created_at')[:6]
+    context = {'new_products': new_products}
     return render(request, 'store/store.html', context=context)
 
 
@@ -34,8 +30,6 @@ def product_info(request, product_slug):
     # cache.set(cache_key, product, timeout=60 * 15)  # Store in cache for 15 minutes
     response = render(request, 'store/product_info.html', context={'product': product})
     # patch_cache_control(response, public=True, max_age=3600)
-    next_url = request.GET.get("next") or request.POST.get("next")  # Debug
-    print("DEBUG: Next URL is", next_url)  # Check if next is captured
     return response
 
 
@@ -79,5 +73,6 @@ def del_product(request, product_id):
     product.delete()
     return redirect('store')
 
-
+def get_new_products(request):
+    new_products = Product.objects.all().order_by('-created_at')[:6]
 

@@ -210,7 +210,7 @@
                     </div>
                   </div>
                   <div class="add-to-cart">
-                    <button class="add-to-cart-btn" data-product-id="{{ product.id }}"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                    <button class="add-to-cart-btn" data-product-id="{{ product.id }}" data-csrf-token="{{ csrf_token }}" data-cart-add-url="{% url 'cart-add' %}"><i class="fa fa-shopping-cart"></i> add to cart</button>
                   </div>
                 </div>
               </div>
@@ -316,57 +316,6 @@
     
           // Navigate to the new URL (this updates the page without reloading)
           window.location.href = currentUrl.toString()
-        })
-      })
-    })
-    
-    $(document).ready(function () {
-      $('.add-to-cart-btn').on('click', function (event) {
-        event.preventDefault() // Prevent the default form submission
-    
-        const productId = $(this).data('product-id') // Get the product ID from the button
-    
-        $.ajax({
-          url: "{% url 'cart-add' %}", // URL to your cart-add view
-          type: 'POST',
-          data: {
-            product_id: productId, // Send the product ID
-            csrfmiddlewaretoken: '{{ csrf_token }}' // CSRF token for security
-          },
-          success: function (response) {
-            if (response.success) {
-              // Update the cart quantity and price in the UI
-              $('#cart_qty').text(response.cart_total_quantity)
-              $('.cart-summary h5').text('SUBTOTAL: $' + response.cart_total_price)
-              $('.cart-summary small').text(response.cart_total_quantity + ' Item(s) selected')
-              // Update the cart items container with the new HTML
-              $('.cart-list').html(response.cart_items_html)
-    
-              // Optionally show a success notification
-              Swal.fire({
-                icon: 'success',
-                title: 'Item added to cart',
-                text: 'Your item has been added to the cart.',
-                timer: 2000,
-                showConfirmButton: false
-              })
-            } else {
-              // Handle failure to add item to cart
-              Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Failed to add item to cart.'
-              })
-            }
-          },
-          error: function (xhr, status, error) {
-            // Handle AJAX error
-            Swal.fire({
-              icon: 'error',
-              title: 'Error!',
-              text: 'Something went wrong. Please try again.'
-            })
-          }
         })
       })
     })
