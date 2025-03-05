@@ -1,18 +1,42 @@
-# filters.py
 import django_filters
 
-from store.models import Product
+from store.models import Category, Product
 
 
 class ProductFilter(django_filters.FilterSet):
-    name = django_filters.CharFilter(lookup_expr='icontains', label='Product Name')
-    min_price = django_filters.NumberFilter(
-        field_name='price', lookup_expr='gte', label='Min Price'
+    # Filter by multiple categories (using checkboxes)
+    category = django_filters.ModelMultipleChoiceFilter(
+        field_name='category__id',
+        to_field_name='id',
+        queryset=Category.objects.all(),
+        widget=django_filters.widgets.CSVWidget,  # Allows multiple values
     )
-    max_price = django_filters.NumberFilter(
-        field_name='price', lookup_expr='lte', label='Max Price'
-    )
+
+    # Filter by price range
+    min_price = django_filters.NumberFilter(field_name='price', lookup_expr='gte')
+    max_price = django_filters.NumberFilter(field_name='price', lookup_expr='lte')
+
+    # Sorting
+    # sort = django_filters.OrderingFilter(
+    #     fields=(
+    #         ('price', 'price_asc'),  # Sort by price ascending
+    #         ('-price', 'price_desc'),  # Sort by price descending
+    #         ('name', 'name_asc'),  # Sort by name ascending
+    #         ('-name', 'name_desc'),  # Sort by name descending
+    #     ),
+    #     field_labels={
+    #         'price': 'Price (Low to High)',
+    #         '-price': 'Price (High to Low)',
+    #         'name': 'Name (A to Z)',
+    #         '-name': 'Name (Z to A)',
+    #     },
+    # )
 
     class Meta:
         model = Product
-        fields = ['name', 'min_price', 'max_price']
+        # fields = ['category', 'min_price', 'max_price', 'sort']
+        fields = [
+            'category',
+            'min_price',
+            'max_price',
+        ]

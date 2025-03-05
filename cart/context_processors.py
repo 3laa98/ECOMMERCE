@@ -1,5 +1,6 @@
 from cart.models import Cart
 
+
 def get_cart(request):
     """Get or create a cart for the authenticated user."""
     if request.user.is_authenticated:
@@ -9,6 +10,7 @@ def get_cart(request):
         cart = None
     return cart
 
+
 def get_cartitems(request):
     """Retrieve cart items, total, and count for the user."""
     cart = get_cart(request)
@@ -16,8 +18,12 @@ def get_cartitems(request):
     # Initialize cart-related variables
     if cart:
         cart_items = cart.items.all()  # Get all items in the cart
-        cart_total_price = cart.get_cart_total()  # Use model method to calculate total price
-        cart_total_quantity = cart.get_cart_count()  # Use model method to count total items
+        cart_total_price = (
+            cart.get_cart_total()
+        )  # Use model method to calculate total price
+        cart_total_quantity = (
+            cart.get_cart_count()
+        )  # Use model method to count total items
     else:
         cart_items = []
         cart_total_quantity = 0

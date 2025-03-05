@@ -1,5 +1,7 @@
-from store.models import Category
 from django.core.cache import cache
+
+from store.models import Category
+
 
 def get_categories(request):
 
@@ -8,6 +10,6 @@ def get_categories(request):
 
     if categories is None:
         categories = Category.objects.all()
-        cache.set(cache_key, categories, timeout = 60*15 )
+        cache.set(cache_key, categories, timeout=60 * 15)
 
-    return {'categories':categories}
+    return {'categories': categories}

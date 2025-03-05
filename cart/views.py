@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_POST
-from store.models import Product
-from django.views.decorators.csrf import csrf_protect
 from django.template.loader import render_to_string
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_POST
+
+from store.models import Product
 
 from .models import Cart, CartItem
 
@@ -16,12 +17,12 @@ def get_cart(request):
     return cart
 
 
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
-
 from django.views.decorators.http import require_POST
-from .models import Product, Cart, CartItem
-from django.contrib.auth.decorators import login_required
+
+from .models import Cart, CartItem, Product
 
 
 @login_required
@@ -32,7 +33,9 @@ def cart_add(request):
         csrf_token = request.POST.get('csrfmiddlewaretoken')
 
         if not product_id:
-            return JsonResponse({'success': False, 'error': 'Product ID is required'}, status=400)
+            return JsonResponse(
+                {'success': False, 'error': 'Product ID is required'}, status=400
+            )
 
         product = get_object_or_404(Product, id=product_id)
         cart = get_cart(request)
@@ -46,21 +49,30 @@ def cart_add(request):
 
         # Calculate total quantity and price
         cart_total_quantity = sum(item.quantity for item in cart_items)
-        cart_total_price = sum(item.product.price * item.quantity for item in cart_items)
+        cart_total_price = sum(
+            item.product.price * item.quantity for item in cart_items
+        )
 
         # Render updated cart items HTML
-        cart_items_html = render_to_string('cart/partial/cart_list.html', {'cart_items': cart_items,'csrf_token':csrf_token})
+        cart_items_html = render_to_string(
+            'cart/partial/cart_list.html',
+            {'cart_items': cart_items, 'csrf_token': csrf_token},
+        )
 
-        return JsonResponse({
-            'success': True,
-            'cart_item_quantity': cart_item.quantity,
-            'cart_total_quantity': cart_total_quantity,
-            'cart_total_price': cart_total_price,
-            'cart_items_html': cart_items_html,  # Return the HTML of cart items
-        })
+        return JsonResponse(
+            {
+                'success': True,
+                'cart_item_quantity': cart_item.quantity,
+                'cart_total_quantity': cart_total_quantity,
+                'cart_total_price': cart_total_price,
+                'cart_items_html': cart_items_html,  # Return the HTML of cart items
+            }
+        )
 
-    return JsonResponse({'success': False, 'error': 'Invalid request', 'message': 'Invalid request'}, status=400)
-
+    return JsonResponse(
+        {'success': False, 'error': 'Invalid request', 'message': 'Invalid request'},
+        status=400,
+    )
 
 
 @login_required
@@ -72,7 +84,9 @@ def cart_remove(request):
         csrf_token = request.POST.get('csrfmiddlewaretoken')
 
         if not item_id:
-            return JsonResponse({'success': False, 'error': 'Item ID is required'}, status=400)
+            return JsonResponse(
+                {'success': False, 'error': 'Item ID is required'}, status=400
+            )
 
         cart_item = get_object_or_404(CartItem, id=item_id)
         cart = get_cart(request)
@@ -82,25 +96,31 @@ def cart_remove(request):
 
             # Calculate total quantity and price
             cart_total_quantity = sum(item.quantity for item in cart_items)
-            cart_total_price = sum(item.product.price * item.quantity for item in cart_items)
+            cart_total_price = sum(
+                item.product.price * item.quantity for item in cart_items
+            )
 
             # Render updated cart items HTML
-            cart_items_html = render_to_string('cart/partial/cart_list.html', {'cart_items': cart_items,'csrf_token':csrf_token})
+            cart_items_html = render_to_string(
+                'cart/partial/cart_list.html',
+                {'cart_items': cart_items, 'csrf_token': csrf_token},
+            )
 
-            return JsonResponse({
-                'success': True,
-                'cart_item_quantity': cart_item.quantity,
-                'cart_total_quantity': cart_total_quantity,
-                'cart_total_price': cart_total_price,
-                'cart_items_html': cart_items_html,  # Return the HTML of cart items
-                'message': 'Item removed from cart.',
-            })
-
+            return JsonResponse(
+                {
+                    'success': True,
+                    'cart_item_quantity': cart_item.quantity,
+                    'cart_total_quantity': cart_total_quantity,
+                    'cart_total_price': cart_total_price,
+                    'cart_items_html': cart_items_html,  # Return the HTML of cart items
+                    'message': 'Item removed from cart.',
+                }
+            )
 
         except CartItem.DoesNotExist:
-            return JsonResponse({'success': False, 'message': 'Item not found in cart.'}, status=404)
-
-
+            return JsonResponse(
+                {'success': False, 'message': 'Item not found in cart.'}, status=404
+            )
 
 
 @login_required
