@@ -17,26 +17,22 @@ class ProductFilter(django_filters.FilterSet):
     max_price = django_filters.NumberFilter(field_name='price', lookup_expr='lte')
 
     # Sorting
-    # sort = django_filters.OrderingFilter(
-    #     fields=(
-    #         ('price', 'price_asc'),  # Sort by price ascending
-    #         ('-price', 'price_desc'),  # Sort by price descending
-    #         ('name', 'name_asc'),  # Sort by name ascending
-    #         ('-name', 'name_desc'),  # Sort by name descending
-    #     ),
-    #     field_labels={
-    #         'price': 'Price (Low to High)',
-    #         '-price': 'Price (High to Low)',
-    #         'name': 'Name (A to Z)',
-    #         '-name': 'Name (Z to A)',
-    #     },
-    # )
+    sort = django_filters.OrderingFilter(
+        fields=(
+            ('price', 'price'),  # Sort by price ascending
+            # ('-price', 'price_desc'),  # Sort by price descending
+            ('name', 'name'),  # Sort by name ascending
+            # ('-name', 'name_desc'),  # Sort by name descending
+        ),
+
+        field_labels={
+            'price': 'Price (Low to High)',
+            '-price': 'Price (High to Low)',
+            'name': 'Name (A to Z)',
+            '-name': 'Name (Z to A)',
+        },
+    )
 
     class Meta:
         model = Product
-        # fields = ['category', 'min_price', 'max_price', 'sort']
-        fields = [
-            'category',
-            'min_price',
-            'max_price',
-        ]
+        fields = ['category', 'min_price', 'max_price', 'sort']
