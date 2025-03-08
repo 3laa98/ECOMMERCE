@@ -31,6 +31,8 @@ def cart_add(request):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         product_id = request.POST.get('product_id')
         csrf_token = request.POST.get('csrfmiddlewaretoken')
+        quantity = int(request.POST.get('quantity', 1))
+        print(quantity)
 
         if not product_id:
             return JsonResponse(
@@ -39,10 +41,10 @@ def cart_add(request):
 
         product = get_object_or_404(Product, id=product_id)
         cart = get_cart(request)
-        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product, quantity=quantity)
 
         if not created:
-            cart_item.quantity += 1
+            cart_item.quantity += quantity
             cart_item.save()
 
         cart_items = cart.items.all()

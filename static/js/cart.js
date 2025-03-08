@@ -1,11 +1,12 @@
 // static/js/cart.js
-function addToCart(productId, csrfToken, cartAddUrl) {
+function addToCart(productId, quantity, csrfToken, cartAddUrl) {
   $.ajax({
     url: cartAddUrl, // URL to your cart-add view
     type: 'POST',
     data: {
       product_id: productId, // Send the product ID
-      csrfmiddlewaretoken: csrfToken // CSRF token for security
+      csrfmiddlewaretoken: csrfToken, // CSRF token for security
+      quantity: quantity
     },
     success: function (response) {
       if (response.success) {
@@ -97,9 +98,10 @@ $(document).ready(function () {
     const productId = $(this).data('product-id'); // Get the product ID from the button
     const csrfToken = $(this).data('csrf-token'); // Get the CSRF token from the button
     const cartAddUrl = $(this).data('cart-add-url'); // Get the cart-add URL from the button
+    const quantity = $(this).attr('data-quantity');
 
     // Call the global function
-    addToCart(productId, csrfToken, cartAddUrl);
+    addToCart(productId, quantity, csrfToken, cartAddUrl);
   });
 });
 

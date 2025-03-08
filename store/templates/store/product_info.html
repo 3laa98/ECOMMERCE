@@ -74,12 +74,13 @@
             <div class="add-to-cart">
               <div class="qty-label">
                 Qty<div class="input-number">
-                  <input type="number" />
+                  <input type="number" class="qty-input" value="1" min="1" />
                   <span class="qty-up">+</span>
                   <span class="qty-down">-</span>
                 </div>
               </div>
-              <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+              <button class="add-to-cart-btn" data-product-id="{{ product.id }}" data-quantity="1" data-csrf-token="{{ csrf_token }}"
+                  data-cart-add-url="{% url 'cart-add' %}"><i class="fa fa-shopping-cart"></i> add to cart</button>
             </div>
 
             <ul class="product-btns">
@@ -91,10 +92,7 @@
             <ul class="product-links">
               <li>Category:</li>
               <li>
-                <a href="#">Headphones</a>
-              </li>
-              <li>
-                <a href="#">Accessories</a>
+                <a href="#">{{product.category}}</a>
               </li>
             </ul>
 
@@ -121,4 +119,65 @@
     <!-- /container -->
   </div>
   <!-- /SECTION -->
+
+  <script>
+
+$(document).ready(function () {
+
+    const $inputField = $(".qty-input");
+    const $addToCartBtn = $(".add-to-cart-btn");
+    const $qtyUp = $(".qty-up");
+    const $qtyDown = $(".qty-down");
+
+    if (!$inputField.length || !$addToCartBtn.length || !$qtyUp.length || !$qtyDown.length) return;
+
+     // Ensure input field always has a valid value
+    function checkValue() {
+        if ($inputField.val() < 1 || isNaN($inputField.val())) {
+            $inputField.val(1);
+        }
+    }
+
+    // Function to update the quantity and button attribute
+    function updateQuantity() {
+        let quantity = parseInt($inputField.val()) || 1;
+        if (quantity < 1) quantity = 1; // Prevent going below 1
+
+        $inputField.val(quantity); // Ensure input stays valid
+        $addToCartBtn.attr("data-quantity", quantity); // Update button attribute
+
+    }
+
+    // Prevent manual entry of negative numbers
+    $inputField.on("keydown", function (event) {
+        if (event.key === "-" || event.key === "e") {
+            event.preventDefault();
+        }
+    });
+
+
+
+    // Handle change event for input field
+    $inputField.on("change", updateQuantity);
+
+    // Handle plus button click
+   /*$qtyUp.on("click", function () {
+        let newValue = parseInt($inputField.val()) || 1;
+        $inputField.val(newValue); // Increment the value
+        updateQuantity(); // Directly call updateQuantity instead of dispatching the event
+    });
+
+    // Handle minus button click
+    $qtyDown.on("click", function () {
+        let newValue = parseInt($inputField.val()) || 1;
+        if (newValue > 1) {
+            $inputField.val(newValue); // Decrement the value
+        }
+        updateQuantity(); // Directly call updateQuantity instead of dispatching the event
+    });*/
+});
+
+
+</script>
+
 {% endblock %}
