@@ -10,6 +10,7 @@ class Cart(models.Model):
     """Model definition for Cart."""
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

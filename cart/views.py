@@ -12,7 +12,7 @@ from .models import Cart, CartItem
 
 def get_cart(request):
     cart, created = Cart.objects.get_or_create(
-        user=request.user if request.user.is_authenticated else None
+        user=request.user, is_active=True if request.user.is_authenticated else None
     )
     return cart
 
@@ -41,10 +41,13 @@ def cart_add(request):
 
         product = get_object_or_404(Product, id=product_id)
         cart = get_cart(request)
-        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product, quantity=quantity)
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
 
         if not created:
             cart_item.quantity += quantity
+            cart_item.save()
+        else:
+            cart_item.quantity = quantity
             cart_item.save()
 
         cart_items = cart.items.all()

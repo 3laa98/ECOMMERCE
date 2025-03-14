@@ -4,7 +4,7 @@ from cart.models import Cart
 def get_cart(request):
     """Get or create a cart for the authenticated user."""
     if request.user.is_authenticated:
-        cart, created = Cart.objects.get_or_create(user=request.user)
+        cart, created = Cart.objects.get_or_create(user=request.user, is_active=True)
     else:
         # You can return None or a cart for guests (optional behavior)
         cart = None
