@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+  <script src="https://js.stripe.com/v3/"></script>
+  <!-- BREADCRUMB -->
+  <div id="breadcrumb" class="section">
+    <!-- container -->
+    <div class="container">
+      <!-- row -->
+      <div class="row">
+        <div class="col-md-12">
+          <h3 class="breadcrumb-header">Checkout</h3>
+        </div>
+      </div>
+      <!-- /row -->
+    </div>
+    <!-- /container -->
+  </div>
+  <!-- /BREADCRUMB -->
+  <!-- SECTION -->
+  <div class="section">
+    <!-- container -->
+    <div class="container">
+      <!-- row -->
+      <div class="row">
+        <div class="col-md-7">
+          <!-- Billing Details -->
+          <div class="billing-details">
+            <div class="section-title">
+              <h3 class="title">Billing address</h3>
+            </div>
+            <div class="form-group">
+              <input class="input" type="text" name="first-name" placeholder="First Name" />
+            </div>
+            <div class="form-group">
+              <input class="input" type="text" name="last-name" placeholder="Last Name" />
+            </div>
+            <div class="form-group">
+              <input class="input" type="email" name="email" placeholder="Email" />
+            </div>
+            <div class="form-group">
+              <input class="input" type="text" name="address" placeholder="Address" />
+            </div>
+            <div class="form-group">
+              <input class="input" type="text" name="city" placeholder="City" />
+            </div>
+            <div class="form-group">
+              <input class="input" type="text" name="country" placeholder="Country" />
+            </div>
+            <div class="form-group">
+              <input class="input" type="text" name="zip-code" placeholder="ZIP Code" />
+            </div>
+            <div class="form-group">
+              <input class="input" type="tel" name="tel" placeholder="Telephone" />
+            </div>
+          </div>
+          <!-- /Billing Details -->
+          <!-- Order notes -->
+          <div class="order-notes">
+            <textarea class="input" placeholder="Order Notes"></textarea>
+          </div>
+          <!-- /Order notes -->
+        </div>
+        <!-- Order Details -->
+        <div class="col-md-5 order-details">
+          <div class="section-title text-center">
+            <h3 class="title">Your Order</h3>
+          </div>
+          <div class="order-summary">
+            <div class="order-col">
+              <div>
+                <strong>PRODUCT</strong>
+              </div>
+              <div>
+                <strong>TOTAL</strong>
+              </div>
+            </div>
+            <div class="order-products">
+              {% for item in cart_items %}
+                <div class="order-col">
+                  <div>{{ item.quantity }}X {{ item.product.name }}</div>
+                  <div>{{ item.product.price }}</div>
+                </div>
+              {% endfor %}
+            </div>
+            <div class="order-col">
+              <div>Shiping</div>
+              <div>
+                <strong>FREE</strong>
+              </div>
+            </div>
+            <div class="order-col">
+              <div>
+                <strong>TOTAL</strong>
+              </div>
+              <div>
+                <strong class="order-total">${{ cart_total_price }}</strong>
+              </div>
+            </div>
+          </div>
+          <form id="payment-form" method="post">
+            <div class="payment-method">
+              <div class="input-radio">
+                <input type="radio" name="payment" id="payment-1" checked />
+                <label for="payment-1">
+                  <span></span>
+                  Credit Card
+                </label>
+                <div class="caption">
+                  <div class="form-group">
+                    <div id="card-number" class="form-control StripeElement"></div>
+                  </div>
+                  <div class="form-group">
+                    <div id="card-expiry" class="form-control StripeElement"></div>
+                  </div>
+                  <div class="form-group">
+                    <div id="card-cvc" class="form-control StripeElement"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="input-checkbox">
+              <input type="checkbox" id="terms" />
+              <label for="terms">
+                <span></span>
+                I've read and accept the <a href="#">terms & conditions</a>
+              </label>
+            </div>
+            <button type="submit" id="submit-button" class="primary-btn order-submit">Pay Now</button>
+            <div id="card-errors" role="alert"></div>
+          </form>
+        </div>
+        <!-- /Order Details -->
+      </div>
+      <!-- /row -->
+    </div>
+    <!-- /container -->
+  </div>
+  <!-- /SECTION -->
+
+  <script>
+  const stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
+  const elements = stripe.elements();
+
+const style = {
+    base: {
+      height: "40px",  // Equivalent to your .input height
+      padding: "0px 15px",  // Matches your padding
+      border: "1px solid #E4E7ED",  // Border color
+      backgroundColor: "#FFF",  // Background color
+      width: "100%",  // Full width
+      fontSize: "16px",
+      color: "#32325d",
+      fontFamily: "'Helvetica Neue', Helvetica, sans-serif",
+      "::placeholder": {
+        color: "#aab7c4",
+      },
+    },
+    invalid: {
+      color: "#fa755a",
+      borderColor: "#fa755a",
+    },
+
+  };
+
+  const cardNumber = elements.create("cardNumber", { style });
+  const cardExpiry = elements.create("cardExpiry", { style });
+  const cardCvc = elements.create("cardCvc", { style });
+
+  cardNumber.mount("#card-number");
+  cardExpiry.mount("#card-expiry");
+  cardCvc.mount("#card-cvc");
+
+  const form = document.getElementById("payment-form");
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const response = await fetch("{% url 'create-payment-intent' %}", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ total: {{ cart_total_price }} }) // Send cart total to backend
+    });
+
+    const { clientSecret, error } = await response.json();
+    if (error) {
+      document.getElementById("card-errors").innerText = error;
+      return;
+    }
+
+    const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: { card: cardNumber }
+    });
+
+    if (confirmError) {
+      document.getElementById("card-errors").innerText = confirmError.message;
+    } else {
+      Swal.fire({
+          icon: 'success',
+          title: 'Payment successful!',
+          text: 'Thank you for purchasing',
+          timer: 2000,
+          showConfirmButton: false
+        });
+      window.location.href = "{% url 'success' %}";
+    }
+  });
+  </script>
+{% endblock content %}
