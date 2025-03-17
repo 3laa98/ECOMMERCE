@@ -1,6 +1,8 @@
+from datetime import timedelta
 from django.db import models
 from django.urls import reverse
 from slugify import slugify
+from django.utils.timezone import now
 
 
 class Category(models.Model):
@@ -51,3 +53,7 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('product-info', args=[self.slug])
+
+    @property
+    def is_new(self):
+        return self.created_at >= now() - timedelta(days=30)

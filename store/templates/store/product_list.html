@@ -104,15 +104,18 @@
               <div class="product-img">
                 <img src="{{ product.image.url }}" alt="" />
                 <div class="product-label">
-                  <span class="sale">-30%</span>
-                  <span class="new">NEW</span>
-                </div>
+
+                        {% if product.is_new %}
+                          <span class="new">NEW</span>
+                        {% endif %}
+
+                      </div>
               </div>
               <div class="product-body">
                 <p class="product-category">{{ product.category }}</p>
                 <h3 class="product-name"><a href="{% url 'product-info' product.slug %}">{{ product.name|capfirst }}</a>
                 </h3>
-                <h4 class="product-price">${{ product.price }}<del class="product-old-price">$980.00</del></h4>
+                <h4 class="product-price">${{ product.price }}</h4>
                 <div class="product-rating">
                   <i class="fa fa-star"></i>
                   <i class="fa fa-star"></i>

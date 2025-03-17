@@ -66,8 +66,12 @@
                 <i class="fa fa-star-o"></i>
               </div>
 
-              <h3 class="product-price">${{ product.price }} <del class="product-old-price">$990.00</del></h3>
-              <span class="product-available">In Stock</span>
+              <h3 class="product-price">${{ product.price }}</h3>
+
+              {% if product.is_new %}
+                <span class="product-available">New</span>
+              {% endif %}
+
             </div>
             <p>{{ product.description }}</p>
 
