@@ -18,7 +18,7 @@
             <div class="checkbox-filter">
               {% for category in categories %}
               <div class="input-checkbox">
-                <input type="checkbox" name="category" value="{{ category.id }}" id="category-{{ category.id }}" {% if category.id|stringformat:"s" in selected_categories %}checked{% endif %}/>
+                <input type="checkbox" name="category" value="{{ category.name }}" id="category-{{ category.id }}" {% if category.name|stringformat:"s" in selected_categories %}checked{% endif %}/>
                 <label for="category-{{ category.id }}">
                   <span></span>
                   {{ category.name }}

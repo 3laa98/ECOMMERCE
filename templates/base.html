@@ -106,7 +106,7 @@
                   <select class="input-select" name="category">
                     <option value="">All Categories</option>
                     {% for category in categories %}
-                    <option  value="{{ category.id }}">{{ category.name }}</option>
+                    <option  value="{{ category.name }}">{{ category.name }}</option>
                     {% endfor %}
                   </select>
                   <input class="input" placeholder="Search here" name="name" value="{{request.GET.name}}" />
@@ -207,18 +207,11 @@
             <li>
               <a href="{% url 'product-list' %}">All Products</a>
             </li>
-            <li>
-              <a href="#">Laptops</a>
-            </li>
-            <li>
-              <a href="#">Smartphones</a>
-            </li>
-            <li>
-              <a href="#">Cameras</a>
-            </li>
-            <li>
-              <a href="#">Accessories</a>
-            </li>
+            {% for category in categories %}
+              <li>
+                <a href="{% url 'product-list' %}?category={{ category.name }}">{{ category.name }}</a>
+              </li>
+            {% endfor %}
           </ul>
           <!-- /NAV -->
         </div>

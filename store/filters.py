@@ -9,8 +9,8 @@ class ProductFilter(django_filters.FilterSet):
 
     # Filter by multiple categories (using checkboxes)
     category = django_filters.ModelMultipleChoiceFilter(
-        field_name='category__id',
-        to_field_name='id',
+        field_name='category__name',
+        to_field_name='name',
         queryset=Category.objects.all(),
         widget=django_filters.widgets.CSVWidget,  # Allows multiple values
     )
