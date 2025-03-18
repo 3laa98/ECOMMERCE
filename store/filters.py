@@ -4,6 +4,9 @@ from store.models import Category, Product
 
 
 class ProductFilter(django_filters.FilterSet):
+
+    name = django_filters.CharFilter(lookup_expr='icontains')
+
     # Filter by multiple categories (using checkboxes)
     category = django_filters.ModelMultipleChoiceFilter(
         field_name='category__id',
@@ -35,4 +38,5 @@ class ProductFilter(django_filters.FilterSet):
 
     class Meta:
         model = Product
-        fields = ['category', 'min_price', 'max_price', 'sort']
+        fields = ['name', 'category', 'min_price', 'max_price', 'sort']
+

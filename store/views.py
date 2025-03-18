@@ -89,3 +89,5 @@ def del_product(request, product_id):
 
 def get_new_products(request):
     new_products = Product.objects.all().order_by('-created_at')[:6]
+
+
