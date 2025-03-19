@@ -40,7 +40,7 @@ def product_list(request):
     product_filter = ProductFilter(request.GET, queryset=products)
 
     selected_categories = request.GET.getlist('category')
-    item_per_page = request.GET.get('item_per_page', 12)
+    item_per_page = request.GET.get('item_per_page', 6)
     # Get the filtered products and paginate them
     filtered_products = product_filter.qs
 

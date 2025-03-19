@@ -3,6 +3,10 @@ from django.db import models
 from django.urls import reverse
 from slugify import slugify
 from django.utils.timezone import now
+from autoslug import AutoSlugField
+from PIL import Image
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
 class Category(models.Model):
@@ -26,7 +30,8 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=100, db_index=True)
-    slug = models.SlugField(max_length=150, unique=True)
+    # slug = models.SlugField(max_length=150, unique=True)
+    slug = AutoSlugField(populate_from='name', max_length=100, unique=True)
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
@@ -46,9 +51,37 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    def resize_image(self, image, size=(600, 600)):
+        img = Image.open(image)
+        img = img.resize(size, Image.Resampling.LANCZOS)
+
+        ext = image.name.split('.')[-1].lower()
+        valid_extensions = {'jpg': 'JPEG', 'jpeg': 'JPEG', 'png': 'PNG', 'gif': 'GIF'}
+
+        if ext not in valid_extensions:
+            raise ValueError(f"Unsupported image extension: {ext}")
+
+        thumb_io = BytesIO()
+        img.save(thumb_io, format=valid_extensions[ext])
+        thumb_io.seek(0)
+        image.name = f"{self.slug}.{ext}"  # Optionally set the image name to the slug
+        return InMemoryUploadedFile(
+            thumb_io,
+            None,
+            f"{self.slug}.{ext}",  # Keep original extension
+            f"image/{ext}",
+            thumb_io.tell(),
+            None
+        )
+
+    # def save(self, *args, **kwargs):
+    #     if not self.slug:
+    #         self.slug = slugify(self.name)
+    #     super().save(*args, **kwargs)
+
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
+        if self.image:
+            self.image = self.resize_image(self.image)
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):

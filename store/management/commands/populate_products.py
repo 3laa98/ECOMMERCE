@@ -19,27 +19,27 @@ class Command(BaseCommand):
         categories = (
             Category.objects.all()
         )  # Assume you already have some categories in the database
-        image_file = self.get_random_image_from_static()
 
-        for _ in range(50):
-            category = random.choice(categories) if categories.exists() else None
 
-            product = Product.objects.create(
-                name=fake.word(),
-                # slug=fake.slug(),
-                category=category,
-                price=random.uniform(10.00, 500.00),
-                description=fake.text(max_nb_chars=255),  # Random product description
-            )
-            if image_file:
-                product.image.save(image_file.name, image_file)  # Save the open file
+        for category in categories:
+            for _ in range(8):
+                # category = random.choice(categories) if categories.exists() else None
+                image_file = self.get_random_image_from_static(category.name, _)
+                product = Product.objects.create(
+                    name=fake.word(),
+                    category=category,
+                    price=random.uniform(10.00, 500.00),
+                    description=fake.text(max_nb_chars=100),
+                )
+                if image_file:
+                    product.image.save(image_file.name, image_file)  # Save the open file
 
-            print(f"Created product: {product.name}")
+                print(f"Created product: {product.name}")
         # self.stdout.write(self.style.SUCCESS("Successfully added fake products!"))
 
-    def get_random_image_from_static(self):
-        # Get the path to the static 'img' directory
-        img_dir = os.path.join(settings.BASE_DIR, 'static', 'img')
+    def get_random_image_from_static(self, category_name, index):
+
+        img_dir = os.path.join(settings.BASE_DIR, 'static', 'img', category_name)
 
         # List all files in the img directory (only images, e.g., .jpg, .png)
         image_files = [
@@ -48,7 +48,8 @@ class Command(BaseCommand):
 
         # If there are images in the directory, return a random one
         if image_files:
-            random_image_path = os.path.join(img_dir, random.choice(image_files))
+            files_number = len(image_files)
+            random_image_path = os.path.join(img_dir, image_files[index%files_number])
 
             # Open the image file and return as a Django File object
             with open(random_image_path, 'rb') as img_file:
