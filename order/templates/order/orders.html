@@ -18,4 +18,28 @@
 			<!-- /container -->
 		</div>
 		<!-- /BREADCRUMB -->
+		<div class="container mt-5">
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>CREATED-AT</th>
+            <th>TOTAL-PRICE</th>
+            <th>STATUS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+            <tr>
+              <td>{{ order.id }}</td>
+              <td >{{ order.created_at }}</td>
+              <td >${{order.total_price}}</td>
+              <td>{{order.status}}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 {% endblock content %}
