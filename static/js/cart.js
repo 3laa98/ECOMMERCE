@@ -30,7 +30,8 @@ function addToCart(productId, quantity, csrfToken, cartAddUrl) {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: 'Failed to add item to cart.'
+          text: response.error
+          //text: 'Failed to add item to cart.'
         });
       }
     },
@@ -39,7 +40,8 @@ function addToCart(productId, quantity, csrfToken, cartAddUrl) {
       Swal.fire({
         icon: 'error',
         title: 'Error!',
-        text: 'Something went wrong. Please try again.'
+        text: error
+        //text: 'Something went wrong. Please try again.'
       });
     }
   });

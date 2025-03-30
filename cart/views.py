@@ -25,9 +25,13 @@ from django.views.decorators.http import require_POST
 from .models import Cart, CartItem, Product
 
 
-@login_required
+
 @require_POST
 def cart_add(request):
+    if not request.user.is_authenticated:
+        return JsonResponse(
+                {'success': False, 'error': 'You have to login first!'}, status=200
+            )
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         product_id = request.POST.get('product_id')
         csrf_token = request.POST.get('csrfmiddlewaretoken')
