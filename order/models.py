@@ -1,12 +1,14 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 
 from cart.models import Cart
 
 # Create your models here.
 
+
 class Order(models.Model):
     """Model definition for Order."""
+
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('paid', 'Paid'),

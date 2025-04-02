@@ -1,11 +1,15 @@
-from django.shortcuts import render
+import json
+
 import stripe
 from django.http import JsonResponse
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-import json
+
 from cart.models import Cart
 from order.views import create_order
+
 # Create your views here.
+
 
 @csrf_exempt
 def create_payment_intent(request):
@@ -18,9 +22,7 @@ def create_payment_intent(request):
 
             # Create a PaymentIntent
             intent = stripe.PaymentIntent.create(
-                amount=total_amount,
-                currency="usd",
-                payment_method_types=["card"]
+                amount=total_amount, currency="usd", payment_method_types=["card"]
             )
 
             order = create_order(request.user, cart)
@@ -29,9 +31,11 @@ def create_payment_intent(request):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
 
+
 def success(request):
     """Render success page after payment."""
     return render(request, "order/success.html")
+
 
 def cancel(request):
     """Render cancel page if payment is canceled."""

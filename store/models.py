@@ -1,12 +1,13 @@
 from datetime import timedelta
+from io import BytesIO
+
+from autoslug import AutoSlugField
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.urls import reverse
-from slugify import slugify
 from django.utils.timezone import now
-from autoslug import AutoSlugField
 from PIL import Image
-from io import BytesIO
-from django.core.files.uploadedfile import InMemoryUploadedFile
+from slugify import slugify
 
 
 class Category(models.Model):
@@ -71,7 +72,7 @@ class Product(models.Model):
             f"{self.slug}.{ext}",  # Keep original extension
             f"image/{ext}",
             thumb_io.tell(),
-            None
+            None,
         )
 
     # def save(self, *args, **kwargs):

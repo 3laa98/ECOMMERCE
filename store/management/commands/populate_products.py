@@ -20,7 +20,6 @@ class Command(BaseCommand):
             Category.objects.all()
         )  # Assume you already have some categories in the database
 
-
         for category in categories:
             for _ in range(8):
                 # category = random.choice(categories) if categories.exists() else None
@@ -32,7 +31,9 @@ class Command(BaseCommand):
                     description=fake.text(max_nb_chars=100),
                 )
                 if image_file:
-                    product.image.save(image_file.name, image_file)  # Save the open file
+                    product.image.save(
+                        image_file.name, image_file
+                    )  # Save the open file
 
                 print(f"Created product: {product.name}")
         # self.stdout.write(self.style.SUCCESS("Successfully added fake products!"))
@@ -49,7 +50,7 @@ class Command(BaseCommand):
         # If there are images in the directory, return a random one
         if image_files:
             files_number = len(image_files)
-            random_image_path = os.path.join(img_dir, image_files[index%files_number])
+            random_image_path = os.path.join(img_dir, image_files[index % files_number])
 
             # Open the image file and return as a Django File object
             with open(random_image_path, 'rb') as img_file:

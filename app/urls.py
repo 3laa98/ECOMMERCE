@@ -30,7 +30,7 @@ urlpatterns = [
     path('', include('account.urls')),
     path('', include('store.urls')),
     path('', include('order.urls')),
-    path('',include('payment.urls')),
+    path('', include('payment.urls')),
     path('cart/', include('cart.urls')),
     path('test/', views.testview, name='test'),
 ]

@@ -1,5 +1,6 @@
 import django_filters
 from django import forms
+
 from store.models import Category, Product
 
 
@@ -12,7 +13,7 @@ class ProductFilter(django_filters.FilterSet):
         field_name='category__name',
         to_field_name='name',
         queryset=Category.objects.all(),
-        widget=forms.CheckboxSelectMultiple ,  # Allows multiple values
+        widget=forms.CheckboxSelectMultiple,  # Allows multiple values
     )
 
     # Filter by price range
@@ -27,7 +28,6 @@ class ProductFilter(django_filters.FilterSet):
             ('name', 'name'),  # Sort by name ascending
             # ('-name', 'name_desc'),  # Sort by name descending
         ),
-
         field_labels={
             'price': 'Price (Low to High)',
             '-price': 'Price (High to Low)',
@@ -39,4 +39,3 @@ class ProductFilter(django_filters.FilterSet):
     class Meta:
         model = Product
         fields = ['name', 'category', 'min_price', 'max_price', 'sort']
-

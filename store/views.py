@@ -57,8 +57,8 @@ def product_list(request):
         {
             'page_obj': page_obj,
             'filter': product_filter,
-            'selected_categories':selected_categories,
-            'item_per_page':item_per_page,
+            'selected_categories': selected_categories,
+            'item_per_page': item_per_page,
             # 'min_price': request.GET.get('min_price', ''),  # Pass min price
             # 'max_price': request.GET.get('max_price', ''),
         },
@@ -89,5 +89,3 @@ def del_product(request, product_id):
 
 def get_new_products(request):
     new_products = Product.objects.all().order_by('-created_at')[:6]
-
-
