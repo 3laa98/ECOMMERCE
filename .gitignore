@@ -175,7 +175,7 @@ static/media/images
 staticfiles/
 
 # Docker files
-Dockerfile
-compose.yaml
-README.Docker.md
-.dockerignore
+# Dockerfile
+# compose.yaml
+# README.Docker.md
+# .dockerignore
