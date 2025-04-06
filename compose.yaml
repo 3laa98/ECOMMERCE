@@ -38,10 +38,11 @@ services:
     expose:
       - 5432
     healthcheck:
-      test: [ "CMD", "pg_isready" ]
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
 volumes:
   postgres_data:
+
 
