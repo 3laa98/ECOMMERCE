@@ -44,6 +44,9 @@ USER appuser
 # Copy the source code into the container.
 COPY . .
 
+RUN mkdir -p /app/staticfiles \
+    && chown -R appuser:appuser /app/staticfiles
+
 # Expose the port that the application listens on.
 EXPOSE 8000
 
