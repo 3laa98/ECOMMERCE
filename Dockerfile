@@ -44,12 +44,12 @@ COPY . .
 RUN mkdir -p /app/staticfiles \
     && chown -R appuser:appuser /app/staticfiles
 
-# Switch to the non-privileged user to run the application.
-USER appuser
-
 # Copy and run entrypoint script
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+
+# Switch to the non-privileged user to run the application.
+USER appuser
 
 # Expose the port that the application listens on.
 EXPOSE 8000
