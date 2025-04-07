@@ -42,7 +42,8 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 COPY . .
 
 RUN mkdir -p /app/staticfiles \
-    && chown -R appuser:appuser /app/staticfiles
+    && chown -R appuser:appuser /app/staticfiles \
+    && chown -R appuser:appuser /app/static
 
 # Copy and run entrypoint script
 COPY entrypoint.sh /entrypoint.sh
