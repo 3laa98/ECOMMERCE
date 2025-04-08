@@ -25,6 +25,10 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+    networks:
+      - app-net
+      - data-net
   db:
     image: postgres:15
     restart: always
@@ -33,6 +37,9 @@ services:
     #   - db-password
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - data-net
     env_file:
       - .env
     expose:
@@ -42,7 +49,25 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/electro.conf:/etc/nginx/conf.d/electro.conf:ro
+      - ./staticfiles:/app/staticfiles
+    depends_on:
+      - web
+    networks:
+      - app-net
+
 volumes:
   postgres_data:
+
+
+networks:
+  app-net:
+  data-net:
 
 
