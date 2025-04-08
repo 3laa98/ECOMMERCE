@@ -15,7 +15,8 @@ services:
       - .env
     ports:
       - 8000:8000
-
+    volumes:
+      - ./media:/app/media
     # The commented out section below is an example of how to define a PostgreSQL
     # database that your application can use. `depends_on` tells Docker Compose to
     # start the database before your application. The `db-data` volume persists the
@@ -57,6 +58,7 @@ services:
     volumes:
       - ./nginx/electro.conf:/etc/nginx/conf.d/electro.conf:ro
       - ./staticfiles:/app/staticfiles
+      - ./media:/app/media
     depends_on:
       - web
     networks:
