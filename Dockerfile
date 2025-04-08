@@ -43,7 +43,8 @@ COPY . .
 
 RUN mkdir -p /app/staticfiles \
     && chown -R appuser:appuser /app/staticfiles \
-    && chown -R appuser:appuser /app/static
+    && chown -R appuser:appuser /app/static \
+    && chown -R appuser:appuser /app/media
 
 # Copy and run entrypoint script
 COPY entrypoint.sh /entrypoint.sh
