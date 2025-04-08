@@ -42,6 +42,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 COPY . .
 
 RUN mkdir -p /app/staticfiles \
+    mkdir -p /app/media \
     && chown -R appuser:appuser /app/staticfiles \
     && chown -R appuser:appuser /app/static \
     && chown -R appuser:appuser /app/media
