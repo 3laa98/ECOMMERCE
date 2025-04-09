@@ -41,8 +41,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 # Copy the source code into the container.
 COPY . .
 
-RUN mkdir -p /app/staticfiles \
-    mkdir -p /app/media \
+RUN mkdir -p /app/staticfiles /app/media \
     && chown -R appuser:appuser /app/staticfiles \
     && chown -R appuser:appuser /app/static \
     && chown -R appuser:appuser /app/media
